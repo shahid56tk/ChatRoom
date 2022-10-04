@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { Button, TextInput, View, StyleSheet } from "react-native"
-import { COLOR_BACKGROUND, COLOR_SECONDARY_TEXT } from "../../../res/drawables/colors"
+import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native"
+import { COLOR_BACKGROUND, COLOR_SECONDARY_TEXT, COLOR_PRIMARY, COLOR_BTN_TEXT, COLOR_ACCENT, COLOR_DIVIDER, COLOR_DARK_PRIMARY, COLOR_PRIMARY_TEXT } from "../../../res/drawables/colors"
 
 const Chat = (props)=>{
 
@@ -13,11 +13,16 @@ const Chat = (props)=>{
                     style= {styles.chatInput}
                     placeholder="Enter Message"
                     onChangeText={(t)=> {setMessage(t)}}
+                    multiline={true}
                 />
-                <Button
-                    title="send"
-                    onPress={()=> {alert(message)}}
-                > </Button>
+                <TouchableOpacity
+                title="Submit"
+                onPress={()=> {alert(message)}}
+            >
+                <View style={styles.btn}>
+                    <Text style= {styles.btnText}>Send </Text>
+                </View>
+            </TouchableOpacity>
             </View>
         </View>
     )
@@ -35,18 +40,33 @@ const styles = StyleSheet.create({
         width:'98%',
         justifyContent:'center',
         position:'absolute',
-        bottom:10,
+        bottom:17,
     },
     chatInput:{
-        width:'83%',
-        height:45,
-        color: COLOR_SECONDARY_TEXT,
+        width:'78%',
+        minHeight:45,
+        color: COLOR_BTN_TEXT,
+        backgroundColor: COLOR_DIVIDER,
         fontSize:20,
-        borderWidth:1,
-        borderRadius:5,
-        elevation:0.01,
+        borderWidth:1.5,
+        borderRadius:15,
         textAlign:'center',
         marginRight:5,
+    },
+    btn:{
+        minHeight:45,
+        minWidth:'20%',
+        borderWidth:1,
+        justifyContent:'center',
+        backgroundColor: COLOR_PRIMARY,
+        elevation:5,
+        borderRadius:15,
+    },
+    btnText:{
+        color: COLOR_BTN_TEXT,
+        fontSize:23,
+        textAlign:'center',
+        textAlignVertical:'center'
     }
 })
 export default Chat;
