@@ -5,7 +5,7 @@ const MsgItem = (props) =>{
     return(
         <TouchableOpacity onLongPress={props.onPress}>
             <View style= {{...props.style, ...styles.item}}>
-                <Text style= {{...props.msgText, fontWeight:'bold'}}>{props.username}</Text>
+                <Text style= {{...props.msgText, fontWeight:'bold'}}>{props.userName}</Text>
                 <Text style= {styles.txt}>{props.msg}</Text>
             </View>
         </TouchableOpacity>
@@ -15,7 +15,7 @@ const MsgItem = (props) =>{
 
 const styles = StyleSheet.create({
     item:{
-        margin:10,
+        margin:5,
         padding:10,
         width:'70%',
         borderRadius:10,

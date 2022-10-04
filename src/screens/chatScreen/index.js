@@ -1,83 +1,73 @@
-import { useState } from "react"
-import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native"
-import { COLOR_BACKGROUND, COLOR_SECONDARY_TEXT, COLOR_PRIMARY, COLOR_BTN_TEXT, COLOR_ACCENT, COLOR_DIVIDER, COLOR_DARK_PRIMARY, COLOR_PRIMARY_TEXT, COLOR_MY_MSG } from "../../../res/drawables/colors"
+import { useEffect, useState } from "react"
+import { TextInput, View, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native";
+import { COLOR_BACKGROUND, COLOR_PRIMARY, COLOR_BTN_TEXT, COLOR_ACCENT, COLOR_DIVIDER, COLOR_MY_MSG } from "../../../res/drawables/colors";
+import {collection, query, onSnapshot, doc, getFirestore} from "firebase/firestore";
+const db = getFirestore(app)
+import app from "../../../api/firebase";
 import MsgItem from "../../components/msgItem";
-const DATA = [
-    {
-      username: 'Qasim',
-      msg: 'Aoa',
-    },
-    {
-      username: 'Majid',
-      msg: 'Wa',
-    },
-    {
-      username: 'Waqas',
-      msg: 'How r u?',
-    },
-    {
-        username: 'Qasim',
-        msg: 'Aoa',
-      },
-      {
-        username: 'Majid',
-        msg: 'Wa',
-      },
-      {
-        username: 'Waqas',
-        msg: 'How r u?',
-      },
-      {
-        username: 'Qasim',
-        msg: 'Aoa',
-      },
-      {
-        username: 'Majid',
-        msg: 'Wa',
-      },
-      {
-        username: 'Waqas',
-        msg: 'How r u?',
-      },
-      {
-          username: 'Qasim',
-          msg: 'Aoa',
-        },
-        {
-          username: 'Majid',
-          msg: 'Wa',
-        },
-        {
-          username: 'Waqas',
-          msg: 'How r u?',
-        },
-  ];
-  
+import {sendMessage} from "../../services/firebaseServices";
+import { CHAT_ROOM_DATABASE } from "../../../res/strings";
+  //const DATA = [];
 const Chat = (props)=>{
 
-    const {userName} = props.route.params
-    const [message, setMessage] = useState(null)
+    const {userName} = props.route.params;
+    const [message, setMessage] = useState(null);
+    const [messages, setMessages]= useState(null);
+    const onSendPressed = async () =>{
+        // message? payload= {userName, message}: alert('Message send empty message ')
+        if(userName && message){
+            let payload = {userName, message}
+            console.log(payload)
+            let res= await sendMessage(payload);
+            setMessage(null)
+        }else{
+            alert('PleaSe Enter Message')
+        }
+    };
+    const getMessages = async() =>{
+        const qry = query(collection(db, CHAT_ROOM_DATABASE))
+        try{
+            onSnapshot(qry, (querySnapshoot) =>{
+                let DATA = [];
+                querySnapshoot.forEach((doc) =>{
+                    DATA.push(doc.data())
+                })
+                //console.log(DATA)
+                setMessages(DATA)
+                //console.log(messages)
+            })
+        }
+        catch(e){
+            alert(e.message)
+        }
+    }
+    useEffect(()=>{
+        getMessages()
+     },[])
+
+
 
 
       const renderItem = ({ item }) => (
-        item.username==userName? 
+        item.userName==userName? 
         <MsgItem 
         style={styles.listItemMe}
-        username = {item.username}
-        msg = {item.msg}
-        onPress = {()=> alert(item.msg)}
+        userName = {"Me"}
+        msg = {item.message}
+        onPress = {()=> alert(item.message)}
         />:
         <MsgItem 
         style={styles.listItem}
-        username = {item.username}
-        msg = {item.msg}
-        onPress = {()=> alert(item.msg)}
+        userName = {item.userName}
+        msg = {item.message}
+        onPress = {()=> alert(item.message)}
         />
+        
       );
     return(
         <View style= {styles.container}>
             <FlatList style= {{marginTop:15}}
-                data={DATA}
+                data={messages}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
@@ -87,10 +77,10 @@ const Chat = (props)=>{
                     placeholder="Enter Message"
                     onChangeText={(t)=> {setMessage(t)}}
                     multiline={true}
+                    value= {message}
                 />
                 <TouchableOpacity
-                title="Submit"
-                onPress={()=> {alert(message)}}
+                onPress={()=> onSendPressed()}
             >
                 <View style={styles.btn}>
                     <Text style= {styles.btnText}>Send </Text>
