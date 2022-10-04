@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button, TextInput, View, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native"
 import { COLOR_BACKGROUND, COLOR_SECONDARY_TEXT, COLOR_PRIMARY, COLOR_BTN_TEXT, COLOR_ACCENT, COLOR_DIVIDER, COLOR_DARK_PRIMARY, COLOR_PRIMARY_TEXT, COLOR_MY_MSG } from "../../../res/drawables/colors"
+import MsgItem from "../../components/msgItem";
 const DATA = [
     {
       username: 'Qasim',
@@ -59,18 +60,19 @@ const Chat = (props)=>{
 
 
       const renderItem = ({ item }) => (
-        item.username==userName?<TouchableOpacity onLongPress={()=> alert(item.msg)}>
-            <View style= {styles.listItemMe}>
-                <Text style= {{...styles.msgText, fontWeight:'bold'}}>Me</Text>
-                <Text style= {styles.msgText}>{item.msg}</Text>
-            </View>
-        </TouchableOpacity>: 
-        <TouchableOpacity onLongPress={()=> alert(item.msg)}>
-            <View style= {styles.listItem}>
-            <Text style= {{...styles.msgText, fontWeight:'bold'}}>{item.username}</Text>
-            <Text style= {styles.msgText}>{item.msg}</Text>
-        </View>
-        </TouchableOpacity>
+        item.username==userName? 
+        <MsgItem 
+        style={styles.listItemMe}
+        username = {item.username}
+        msg = {item.msg}
+        onPress = {()=> alert(item.msg)}
+        />:
+        <MsgItem 
+        style={styles.listItem}
+        username = {item.username}
+        msg = {item.msg}
+        onPress = {()=> alert(item.msg)}
+        />
       );
     return(
         <View style= {styles.container}>
@@ -139,22 +141,10 @@ const styles = StyleSheet.create({
     },
     listItem:{
         backgroundColor: COLOR_ACCENT,
-        margin:10,
-        padding:10,
-        width:'60%',
-        borderRadius:10,
     },
     listItemMe:{
         backgroundColor: COLOR_MY_MSG,
-        margin:10,
-        padding:10,
-        width:'60%',
-        borderRadius:10,
         alignSelf:'flex-end',
-        textAlign:'left'
     },
-    msgText:{
-        fontSize:14,
-    }
 })
 export default Chat;
