@@ -7,12 +7,12 @@ const MsgItem = (props) =>{
             <View style= {{...props.style, ...styles.item}}>
                 <Text style= {{...props.msgText, fontWeight:'bold'}}>{props.userName}</Text>
                 <Text style= {styles.txt}>{props.msg}</Text>
+                <Text style= {styles.txtDate}>{props.date + ', ' + props.time}</Text>
             </View>
         </TouchableOpacity>
         
     )
 };
-
 const styles = StyleSheet.create({
     item:{
         margin:5,
@@ -21,7 +21,12 @@ const styles = StyleSheet.create({
         borderRadius:10,
     },
     txt:{
-        //fontSize:12,
+        fontSize:15,
+    },
+    txtDate:{
+        fontSize:12,
+        textAlign:'left',
+        alignSelf:'flex-end'
     }
 })
 export default MsgItem

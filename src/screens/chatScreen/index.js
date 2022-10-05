@@ -6,7 +6,7 @@ const db = getFirestore(app)
 import app from "../../../api/firebase";
 import MsgItem from "../../components/msgItem";
 import {sendMessage} from "../../services/firebaseServices";
-import { CHAT_ROOM_DATABASE } from "../../../res/strings";
+import { CHAT_ROOM_DATABASE, getCurrentDate, getCurrentTime } from "../../../res/strings";
   //const DATA = [];
 const Chat = (props)=>{
 
@@ -14,11 +14,14 @@ const Chat = (props)=>{
     const [message, setMessage] = useState(null);
     const [messages, setMessages]= useState(null);
     const onSendPressed = async () =>{
-        if(userName && message){
-            let payload = {userName, message}
-            console.log(payload)
-            let res= await sendMessage(payload);
+        let date = getCurrentDate();
+        let time = getCurrentTime();
+        console.log(date+ ', '+time)
+        if(userName && message && date && time){
+            let payload = {userName, message, date, time}
             setMessage(null)
+            //console.log(payload)
+            let res= await sendMessage(payload);
         }else{
             alert('PleaSe Enter Message')
         }
@@ -27,11 +30,14 @@ const Chat = (props)=>{
         const qry = query(collection(db, CHAT_ROOM_DATABASE))
         try{
             onSnapshot(qry, (querySnapshoot) =>{
-                let DATA = [];
+                let list = [];
                 querySnapshoot.forEach((doc) =>{
-                    DATA.push(doc.data())
+                    list.push(doc.data())
                 })
-                //console.log(DATA)
+                const response = {data: list}
+                const DATA=response.data.slice(0).sort((b, a)=>
+                a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+                //console.log(DATA);
                 setMessages(DATA)
                 //console.log(messages)
             })
@@ -53,19 +59,25 @@ const Chat = (props)=>{
         style={styles.listItemMe}
         userName = {"Me"}
         msg = {item.message}
+        date = {item.date}
+        time = {item.time}
         onPress = {()=> alert(item.message)}
         />:
         <MsgItem 
         style={styles.listItem}
         userName = {item.userName}
         msg = {item.message}
+        date = {item.date}
+        time = {item.time}
         onPress = {()=> alert(item.message)}
         />
         
       );
     return(
         <View style= {styles.container}>
-            <FlatList style= {{marginTop:15}}
+            <FlatList style= {styles.list}
+            inverted={true}
+            // reference={(ref) => this.flatListRef = ref}
                 data={messages}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
@@ -135,5 +147,10 @@ const styles = StyleSheet.create({
         backgroundColor: COLOR_MY_MSG,
         alignSelf:'flex-end',
     },
+    list:{
+        marginTop:15,
+        //flexDirection:'column-reverse'
+        
+    }
 })
 export default Chat;
