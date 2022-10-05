@@ -1,5 +1,5 @@
 import app from "../../api/firebase";
-import {collection, getDoc, getFirestore, addDoc} from 'firebase/firestore'
+import {collection, getFirestore, addDoc, query, onSnapshot, doc,} from 'firebase/firestore'
 import { CHAT_ROOM_DATABASE } from "../../res/strings";
 const db = getFirestore(app);
 export const sendMessage = async (payload) => {
@@ -12,3 +12,4 @@ export const sendMessage = async (payload) => {
         return false;
     }
 }
+

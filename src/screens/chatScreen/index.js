@@ -14,7 +14,6 @@ const Chat = (props)=>{
     const [message, setMessage] = useState(null);
     const [messages, setMessages]= useState(null);
     const onSendPressed = async () =>{
-        // message? payload= {userName, message}: alert('Message send empty message ')
         if(userName && message){
             let payload = {userName, message}
             console.log(payload)
